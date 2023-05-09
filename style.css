@@ -1,0 +1,33 @@
+* {
+    outline: 1px dashed red;
+    outline-offset: -1px;
+}
+
+body {
+    margin: 2em;
+}
+
+/* Style buttons */
+.btn {
+    background-color: DodgerBlue;
+    border: none;
+    color: white;
+    padding: 12px 30px;
+    cursor: pointer;
+    font-size: 20px;
+}
+
+/* Darker background on mouse-over */
+.btn:hover {
+    background-color: RoyalBlue;
+}
+
+
+.question-container {
+    margin-bottom: 1.5em;
+}
+
+#quiz-body {
+    margin-left: 3em;
+    margin-right: 3em;
+}

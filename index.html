@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Multiple Choice Maker</title>
+    <meta name="description" content="Online tool to make multiple choice tests that can be imported to Canvas with the help of the text to Canvas converter from San Deigo State University.">
+
+    <script type="text/javascript" src="app.js" defer></script>
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+</head>
+
+<body>
+    <h1> Multiple Choice Quiz Maker </h1>
+
+    <div id="quiz-body">
+
+    </div>
+
+    <div id="question-div" style="display:none;">
+        <div id="question-form">
+            <label for="question-name"> Question: </label>
+            <input type="text" id="question-name" value="" placeholder="Question here">
+            <br>
+        </div>
+        <button id="new-answer-button" class="btn"> New answer </button>
+    </div>
+
+    <br><br><br>
+
+    <button id="new-question-button" class="btn"> New Question </button>
+
+    <br><br><br>
+
+    <button id="download-button" class="btn"><i class="fa fa-download"></i> Download</button>
+</body>
+
+</html>
