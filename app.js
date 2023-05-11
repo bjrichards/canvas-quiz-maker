@@ -59,13 +59,18 @@ class Question {
         return this.answers.length;
     }
 
+    /**
+     * Returns if the referenced Answer object is true or false.
+     * @param {int} answerId Unique identifier for the answer.
+     * @returns {boolean} If the answer referenced is considered correct.
+     */
     getAnswerIsCorrect(answerId) {
         return this.answers[answerId].getIsCorrectAnswer();
     }
 
     /**
      * Sets the question text input field.
-     * @param {html.input} input Input tag of type text.
+     * @param {html.input} input HTML input element of type text.
      */
     setTextInput(input) {
         this.inputFieldText = input;
@@ -73,7 +78,7 @@ class Question {
 
     /**
      * Set what input tag is used for the dropdown question type. 
-     * @param {html.select} input HTML Select input tag.
+     * @param {html.select} input HTML input element of type select.
      */
     setDropdownInput(input) {
         this.inputFieldDropdown = input;
@@ -87,6 +92,10 @@ class Question {
         this.buttonAddAnswer = button;
     }
 
+    /**
+     * 
+     * @param {html.input} checkbox Input element of type checkbox.
+     */
     addAnswerCheckbox(checkbox) {
         this.inputCheckboxAnswers.push(checkbox);
     }
@@ -105,7 +114,7 @@ class Question {
 
     /**
      * Attaches event listener to the text field input for the question.
-     * @param {html.input} input Input tag of type text.
+     * @param {html.input} input HTML input element of type text.
      */
     addTextInputEventListener(input) {
         this.setTextInput(input);
@@ -114,7 +123,7 @@ class Question {
 
     /**
      * Attaches event listener to the select input field input for the question.
-     * @param {html.select} input HTML Select input tag.
+     * @param {html.select} input HTML input element of type select.
      */
     addDropdownInputEventListener(input) {
         this.inputFieldDropdown = input;
@@ -130,26 +139,45 @@ class Question {
         this.buttonAddAnswer.addEventListener("click", this.addNewAnswer.bind(this), false);
     }
 
+    /**
+     * Attaches event listener to the text input element within the referenced Answer object.
+     * @param {int} answerIndex Index of answers array to give the input element to.
+     * @param {html.input} input HTML input element of type text.
+     */
     addAnswerTextInputEventListener(answerIndex, input) {
         this.answers[answerIndex].addTextInputEventListener(input);
     }
 
+    /**
+     * Attaches event listener to the checkbox input element within the referenced Answer object.
+     * @param {int} answerIndex Index of answers array to give the input element to.
+     * @param {html.input} input HTML input element of type checkbox.
+     */
     addCheckboxEventListener(answerIndex, checkbox) {
         this.addAnswerCheckbox(checkbox);
         this.inputCheckboxAnswers[answerIndex].addEventListener("change", this.updateCheckboxes.bind(this), false);
     }
 
+    /**
+     * Deletes all HTML input checkboxes in this question object.
+     */
     clearCheckboxes() {
         while (this.inputCheckboxAnswers.length > 0)
             this.inputCheckboxAnswers.pop();
     }
 
+    /**
+     * Deletes all the answers in this question object.
+     */
     clearAnswers() {
         while (this.getAnswersLength() > 0) {
             this.answers.pop();
         }
     }
 
+    /**
+     * Updates Answer objects of this question object to be true or false depending on the checkbox associated to the Answer object.
+     */
     updateCheckboxes() {
         var answerCheckboxId = event.target.id.split('-').pop();
         if (event.target.checked) {
@@ -182,17 +210,20 @@ class Question {
         var temp = this.questionType;
         this.questionType = this.inputFieldDropdown.value;
 
+        // If question type True/False now but wasn't prior
         if (temp != enumQuestions.TrueFalse && this.questionType == enumQuestions.TrueFalse) {
             this.clearAnswers();
             this.clearCheckboxes();
             this.addNewAnswer(0, "True");
             this.addNewAnswer(1, "False");
         }
+        // If question type is not True/False but was prior
         else if (temp == enumQuestions.TrueFalse && this.questionType != enumQuestions.TrueFalse) {
             while (this.getAnswersLength() > 0) {
                 this.answers.pop();
             }
         }
+        // If question type is Essay but wasn't prior
         else if (temp != enumQuestions.Essay && this.questionType == enumQuestions.Essay) {
             this.clearAnswers();
             this.clearCheckboxes();
@@ -201,9 +232,11 @@ class Question {
     }
 }
 
+
+/** A class containing information required to contain an answer. */
 class Answer {
     /**
-     * 
+     * Constructor for the Answer object. Contains identifying variables, state, and inputs associated to this Answer.
      * @param {int} id Unique identifier for this instance of answer.
      * @param {int} orderPosition Position for this instance of answer in relation to the other answers.
      * @param {string} text Intitial text of this instance of answer.
@@ -232,6 +265,10 @@ class Answer {
         return this.text;
     }
 
+    /**
+     * Returns if the referenced Answer object is true or false.
+     * @returns {boolean} If the answer is considered correct.
+     */
     getIsCorrectAnswer() {
         return this.correctAnswer;
     }
@@ -244,18 +281,26 @@ class Answer {
         return this.orderPosition;
     }
 
+    /**
+     * Sets the answer text input field.
+     * @param {html.input} input HTML input element of type text.
+     */
     setTextInput(input) {
         this.inputFieldText = input;
     }
 
+    /**
+     * Sets whether this answer is considered correct or not.
+     * @param {boolean} flag True if answer is considered correct, else false.
+     */
     setAsCorrectAnswer(flag) {
         this.correctAnswer = flag;
     }
 
     /**
-     * 
-     * @param {*} input 
-     */
+      * Attaches event listener to the text field input for the answer.
+      * @param {html.input} input HTML input element of type text.
+      */
     addTextInputEventListener(input) {
         this.setTextInput(input);
         this.inputFieldText.addEventListener("input", this.updateTextValue.bind(this), false);
@@ -301,7 +346,8 @@ function addNewQuestion() {
 }
 
 /**
- * Adds new Answer to a question on the page.
+ * Adds new Answer to a Question object.
+ * @param {int} questionId Id of Question object to add new answer to.
  */
 function addNewAnswer(questionId) {
     var question = questions[questionId];
@@ -398,10 +444,6 @@ function createQuestionContainer(parent, question) {
     ellipsisImage.setAttribute("class", "fa fa-ellipsis-v");
     addMoreOptionsButton.appendChild(ellipsisImage);
 
-    // question.addAddAnswerButtonEventListener(addAnswerButton);
-
-
-
     // Answer container
     var divAnswerContainer = document.createElement("div");
     divQuestionAnswer.append(divAnswerContainer);
@@ -435,7 +477,6 @@ function createQuestionContainer(parent, question) {
         divAnswerContainer.appendChild(document.createElement("br"));
 
     }
-
 
     // Add event listener to question class
     question.addTextInputEventListener(inputQuestion);
