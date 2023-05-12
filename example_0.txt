@@ -1,0 +1,22 @@
+1. Which of the following is a planet?
+a) Moon
+b) Sun
+c) Pluto
+*d) Mars
+e) Comet
+
+2. The moon is a satellite.
+*a) True
+b) False
+
+3. Which of the following are birds?
+[] Alligator
+[*] Blue bird
+[*] Robin
+[] T-rex
+[] Cat
+[*] Dodo
+
+4. Please write about your first experience with a bird.
+___
+
