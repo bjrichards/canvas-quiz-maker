@@ -1,15 +1,41 @@
-* {
-    outline: 1px dashed red;
-    outline-offset: -1px;
+:root {
+    --primary-color: #1a237e;
+    --dark-primary-color: #0f1041;
+    --accent-color: #2962ff;
 }
 
 body {
-    margin: 2em;
+    height: 100%;
+    background: #e0e0e0;
+    font-family: sans-serif;
+    font-size: 14px;
 }
 
-/* Style buttons */
+.app::before {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 300px;
+    background: var(--dark-primary-color);
+}
+
+.app .app-header {
+    position: relative;
+    padding-top: 80px;
+    color: #fff;
+}
+
+.app .app-header h1 {
+    padding-bottom: 25px;
+    font-size: 3.25em;
+    font-weight: 100;
+}
+
 .btn {
-    background-color: DodgerBlue;
+    background-color: var(--accent-color);
     border: none;
     color: white;
     padding: 0.5em 1em;
@@ -17,7 +43,6 @@ body {
     font-size: 1.2em;
 }
 
-/* Darker background on mouse-over */
 .btn:hover {
     background-color: RoyalBlue;
 }
@@ -27,7 +52,50 @@ body {
     margin-bottom: 1.5em;
 }
 
+.label-question {
+    font-size: 1.4em;
+    text-align: right;
+}
+
+.input-question {
+    border: 0;
+    border-bottom: 1px solid #ccc;
+    font-size: 1.4em;
+    width: 60%;
+    overflow: hidden;
+}
+
+.question-opt-button {
+    border: none;
+    padding: 0.25em 0.5em;
+    cursor: pointer;
+    font-size: 1.2em;
+    margin-left: 0.25em;
+}
+
+#wrap {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto 60px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25);
+}
+
 #quiz-body {
     margin-left: 3em;
     margin-right: 3em;
+}
+
+#page-view {
+    position: relative;
+    padding: 44px 55px;
+    background: #fff;
+    z-index: 10;
+}
+
+#new-question-button {
+    float: left;
+}
+
+#download-button {
+    float: right;
 }

@@ -396,11 +396,14 @@ function createQuestionContainer(parent, question) {
     labelQuestion.setAttribute("for", "input-question-" + question.getId());
     labelQuestion.id = "label-question-" + question.getId();
     labelQuestion.innerText = (question.getOrderPosition() + 1).toString() + ": ";
+    labelQuestion.classList.add("label-question");
     divQuestion.appendChild(labelQuestion);
     // Question input
-    var inputQuestion = document.createElement("input");
-    inputQuestion.setAttribute("type", "text");
+    var inputQuestion = document.createElement("textarea");
+    // inputQuestion.setAttribute("type", "textarea");
+    inputQuestion.setAttribute("rows", "1");
     inputQuestion.id = "input-question-" + question.getId();
+    inputQuestion.classList.add("input-question");
     if (question.getText != "") {
         inputQuestion.value = question.getText();
     }
@@ -408,10 +411,22 @@ function createQuestionContainer(parent, question) {
         inputQuestion.setAttribute("placeholder", "");
     }
     divQuestion.appendChild(inputQuestion);
-    divQuestion.appendChild(document.createElement("br"));
+    // Add new answer button if applicable
+    if (question.getQuestionType() != enumQuestions.TrueFalse && question.getQuestionType() != enumQuestions.Essay) {
+        var addAnswerButton = document.createElement("button");
+        addAnswerButton.classList.add("question-opt-button");
+        divQuestion.appendChild(addAnswerButton);
+
+        var plusImage = document.createElement("i");
+        plusImage.setAttribute("class", "fa fa-plus");
+        addAnswerButton.appendChild(plusImage);
+
+        question.addAddAnswerButtonEventListener(addAnswerButton);
+    }
     // Dropdown selector for question type
     var selectQuestionType = document.createElement("select");
     selectQuestionType.id = "select-type-question-" + question.getId();
+    selectQuestionType.classList.add("question-opt-button");
     for (var i = 0; i < questionTypes.length; i++) {
         var option = document.createElement("option");
         option.setAttribute("value", questionTypes[i]);
@@ -423,21 +438,10 @@ function createQuestionContainer(parent, question) {
         selectQuestionType.appendChild(option);
     }
     divQuestion.appendChild(selectQuestionType);
-    // Add new answer button if applicable
-    if (question.getQuestionType() != enumQuestions.TrueFalse && question.getQuestionType() != enumQuestions.Essay) {
-        var addAnswerButton = document.createElement("button");
-        addAnswerButton.classList.add("button_plus");
-        divQuestion.appendChild(addAnswerButton);
 
-        var plusImage = document.createElement("i");
-        plusImage.setAttribute("class", "fa fa-plus");
-        addAnswerButton.appendChild(plusImage);
-
-        question.addAddAnswerButtonEventListener(addAnswerButton);
-    }
     // Add more options button
     var addMoreOptionsButton = document.createElement("button");
-    addMoreOptionsButton.classList.add("button_plus");
+    addMoreOptionsButton.classList.add("question-opt-button");
     divQuestion.appendChild(addMoreOptionsButton);
 
     var ellipsisImage = document.createElement("i");
@@ -518,7 +522,9 @@ function createTextStringFromQuestions() {
     var questionKeys = Object.keys(questions);
     for (var i = 0; i < questionKeys.length; i++) {
         // Set question
-        text = text + (i + 1).toString() + ". " + questions[questionKeys[i]].getText();
+        var questionText = questions[questionKeys[i]].getText();
+        questionText = questionText.replace(/\n/gi, "\n\t");
+        text = text + (i + 1).toString() + ". " + questionText;
 
         // Set essay if question is of type Essay
         if (questions[questionKeys[i]].getQuestionType() === enumQuestions.Essay) {
