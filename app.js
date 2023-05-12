@@ -69,6 +69,19 @@ class Question {
     }
 
     /**
+     * 
+     * @returns {int} Number of answers of this question that are correct.
+     */
+    getNumberOfCorrectAnswers() {
+        var result = 0;
+        for (var i = 0; i < this.getAnswersLength(); i++) {
+            if (this.getAnswerIsCorrect(i))
+                result++;
+        }
+        return result;
+    }
+
+    /**
      * Sets the question text input field.
      * @param {html.input} input HTML input element of type text.
      */
@@ -90,6 +103,23 @@ class Question {
      */
     setAddAnswerButton(button) {
         this.buttonAddAnswer = button;
+    }
+
+    /**
+     * 
+     * @param {int} answerId Unique identifier for the answer.
+     * @param {boolean} flag If the answer referenced is considered correct.
+     */
+    setAnswerCorrectedness(answerId, flag) {
+        this.answers[answerId].setAsCorrectAnswer(flag);
+    }
+
+    /**
+     * 
+     * @param {string} qType Question type from enumQuestions.
+     */
+    setQuestionType(qType) {
+        this.questionType = qType;
     }
 
     /**
@@ -337,24 +367,28 @@ downloadButton.addEventListener("click", downloadTextFile);
 /**
  * Adds new Question to the page.
  */
-function addNewQuestion() {
-    var newQuestion = new Question(questionNum, questionNum);
+function addNewQuestion(text = "", updateDisplay = true) {
+    if (text == "[object MouseEvent]") {
+        text = "";
+    }
+    var newQuestion = new Question(questionNum, questionNum, text);
     questionNum++;
 
     questions[newQuestion.getId()] = newQuestion;
-    updateDisplayQuestions(true);
+    if (updateDisplay)
+        updateDisplayQuestions(true);
 }
 
 /**
  * Adds new Answer to a Question object.
  * @param {int} questionId Id of Question object to add new answer to.
  */
-function addNewAnswer(questionId) {
+function addNewAnswer(questionId, text = "", updateDisplay = true) {
     var question = questions[questionId];
-    var newAnswer = new Answer(question.getAnswersLength(), question.getAnswersLength(), "");
-
-    question.addNewAnswer(newAnswer);
-    updateDisplayQuestions(true);
+    var newAnswer = new Answer(question.getAnswersLength(), question.getAnswersLength(), text);
+    question.addNewAnswer(newAnswer, newAnswer.getText());
+    if (updateDisplay)
+        updateDisplayQuestions(true);
 }
 
 /**
@@ -412,17 +446,21 @@ function createQuestionContainer(parent, question) {
     }
     divQuestion.appendChild(inputQuestion);
     // Add new answer button if applicable
-    if (question.getQuestionType() != enumQuestions.TrueFalse && question.getQuestionType() != enumQuestions.Essay) {
-        var addAnswerButton = document.createElement("button");
-        addAnswerButton.classList.add("question-opt-button");
-        divQuestion.appendChild(addAnswerButton);
 
-        var plusImage = document.createElement("i");
-        plusImage.setAttribute("class", "fa fa-plus");
-        addAnswerButton.appendChild(plusImage);
+    var addAnswerButton = document.createElement("button");
+    addAnswerButton.classList.add("question-opt-button");
+    divQuestion.appendChild(addAnswerButton);
 
-        question.addAddAnswerButtonEventListener(addAnswerButton);
+    var plusImage = document.createElement("i");
+    plusImage.setAttribute("class", "fa fa-plus");
+    addAnswerButton.appendChild(plusImage);
+
+    if (question.getQuestionType() == enumQuestions.TrueFalse || question.getQuestionType() == enumQuestions.Essay) {
+        addAnswerButton.setAttribute("disabled", "");
     }
+
+    question.addAddAnswerButtonEventListener(addAnswerButton);
+
     // Dropdown selector for question type
     var selectQuestionType = document.createElement("select");
     selectQuestionType.id = "select-type-question-" + question.getId();
@@ -450,35 +488,42 @@ function createQuestionContainer(parent, question) {
 
     // Answer container
     var divAnswerContainer = document.createElement("div");
+    divAnswerContainer.classList.add("answer-container");
     divQuestionAnswer.append(divAnswerContainer);
 
     // Add answers
     for (var i = 0; i < question.getAnswersLength(); i++) {
+        var divSingleAnswerContainer = document.createElement("div");
+        divSingleAnswerContainer.classList.add("answer-single-container");
+        divAnswerContainer.append(divSingleAnswerContainer);
+
         var inputCheckbox = document.createElement("input");
         inputCheckbox.id = "question-" + question.getId() + "-" + "answer-checkbox-" + question.answers[i].getId();
         inputCheckbox.setAttribute("type", "checkbox");
         inputCheckbox.checked = question.getAnswerIsCorrect(i);
-        divAnswerContainer.append(inputCheckbox);
+        divSingleAnswerContainer.append(inputCheckbox);
         question.addCheckboxEventListener(question.answers[i].getId(), inputCheckbox);
 
         var labelAnswer = document.createElement("label");
         labelAnswer.setAttribute("for", "question-" + question.getId() + "-" + "answer-input-" + question.answers[i].getId());
         labelAnswer.id = "question-" + question.getId() + "-" + "answer-label-" + question.answers[i].getId();
         labelAnswer.innerText = intToAlphabet(question.answers[i].getOrderPosition()) + ") ";
-        divAnswerContainer.append(labelAnswer);
+        labelAnswer.classList.add("label-answer");
+        divSingleAnswerContainer.append(labelAnswer);
 
         var inputAnswer = document.createElement("input");
         inputAnswer.id = "question-" + question.getId() + "-" + "answer-input-" + question.answers[i].getId();
         inputAnswer.setAttribute("type", "text");
         inputAnswer.value = question.answers[i].getText();
+        inputAnswer.classList.add("input-answer");
         if (question.getQuestionType() === enumQuestions.TrueFalse) {
             inputAnswer.setAttribute("disabled", "");
         }
         if (question.getQuestionType() !== enumQuestions.TrueFalse && question.getQuestionType() !== enumQuestions.Essay)
             question.addAnswerTextInputEventListener(i, inputAnswer);
-        divAnswerContainer.append(inputAnswer);
+        divSingleAnswerContainer.append(inputAnswer);
 
-        divAnswerContainer.appendChild(document.createElement("br"));
+        // divAnswerContainer.appendChild(document.createElement("br"));
 
     }
 
@@ -523,7 +568,9 @@ function createTextStringFromQuestions() {
     for (var i = 0; i < questionKeys.length; i++) {
         // Set question
         var questionText = questions[questionKeys[i]].getText();
+        // If the question is multi-line, format the tabbing
         questionText = questionText.replace(/\n/gi, "\n\t");
+
         text = text + (i + 1).toString() + ". " + questionText;
 
         // Set essay if question is of type Essay
@@ -552,4 +599,87 @@ function createTextStringFromQuestions() {
         text = text + "\n\n";
     }
     return text;
+}
+
+
+async function importExistingQuiz(file) {
+    let text = await file.text();
+    parseQuizTxt(text);
+    updateDisplayQuestions(true);
+}
+
+function parseQuizTxt(text) {
+    const questionAnswerArray = text.split('\n\n');
+    // console.log(questionAnswerArray);
+
+    for (var i = 0; i < questionAnswerArray.length; i++) {
+        const questionSepArray = questionAnswerArray[i].split("\n");
+
+        // Get questions string and answers array
+        var onQuestion = true;
+        var questionText = "";
+        var answers = [];
+        for (var j = 0; j < questionSepArray.length; j++) {
+            if (onQuestion) {
+                if (j > 0 && questionSepArray[j][0] != '\t') {
+                    onQuestion = false;
+                    answers.push(questionSepArray[j]);
+                }
+                else {
+                    questionText = questionText + questionSepArray[j];
+                }
+            }
+            else {
+                answers.push(questionSepArray[j]);
+            }
+        }
+        if (questionText == "")
+            break;
+        // Format questionText to not have it's number
+        var rem = questionText[0];
+        do {
+            rem = questionText[0];
+            questionText = questionText.slice(1);
+
+        } while (rem != '.')
+        questionText = questionText.slice(1);
+
+        // Create the question
+        addNewQuestion(questionText, false);
+
+        // Create answers
+        // If question is essay
+        if (answers[0] == '___') {
+            questions[i].setQuestionType(enumQuestions.Essay);
+        }
+        else {
+            for (var j = 0; j < answers.length; j++) {
+                var correctFlag = false;
+                if (answers[j] == "" || answers[j] == " " || answers[j] === undefined)
+                    continue;
+                if (answers[j][0] == "[" && answers[j][1] == "*")
+                    correctFlag = true;
+                else if (answers[j][0] == "*")
+                    correctFlag = true;
+
+                var rem = "";
+                do {
+                    rem = answers[j][0];
+                    answers[j] = answers[j].slice(1);
+
+                } while (rem != ')' && rem != ']' && rem !== undefined)
+                answers[j] = answers[j].slice(1);
+
+                addNewAnswer(i, answers[j], false);
+                questions[i].setAnswerCorrectedness(j, correctFlag)
+            }
+            if (questions[i].getAnswersLength() == 2 && questions[i].answers[0].getText() == "True" && questions[i].answers[1].getText() == "False") {
+                questions[i].setQuestionType(enumQuestions.TrueFalse);
+            }
+            else if (questions[i].getNumberOfCorrectAnswers() > 1) {
+                questions[i].setQuestionType(enumQuestions.MultipleAnswers);
+            }
+        }
+
+    }
 }
