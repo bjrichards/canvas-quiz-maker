@@ -58,15 +58,17 @@ body {
 
 .answer-single-container {
     line-height: 1.2em;
+    margin-top: 0.25em;
 }
 
 .label-question {
-    /* vertical-align: sub; */
     font-size: 1.4em;
     font-weight: bold;
     text-align: left;
     width: 1.5em;
+    height: 1.2em;
     display: inline-block;
+    vertical-align: middle;
 }
 
 .label-answer {
@@ -78,17 +80,25 @@ body {
 
 .input-question {
     border: 0;
-    border-bottom: 1px solid #ccc;
+    border-left: 2px solid #ccc;
+    border-bottom: 2px solid #ccc;
+    padding-left: 0.4em;
     font-size: 1.4em;
+    font-family: inherit;
     width: 60%;
-    overflow: hidden;
+    height: 1.2em;
+    overflow-x: hidden;
+    display: inline-block;
+    vertical-align: middle;
 }
 
 .input-answer {
     border: 0;
+    border-left: 1px solid #ccc;
     border-bottom: 1px solid #ccc;
     font-size: 1.2em;
     padding-top: 0.1em;
+    padding-left: 0.4em;
     margin-bottom: 0.3em;
     width: 60%;
 }

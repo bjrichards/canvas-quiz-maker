@@ -231,6 +231,15 @@ class Question {
      */
     updateTextValue() {
         this.text = this.inputFieldText.value;
+        this.updateTextAreaSize();
+    }
+
+    /**
+     * Updates size of question textarea to show all lines.
+     */
+    updateTextAreaSize() {
+        this.inputFieldText.style.height = "1.2em";
+        this.inputFieldText.style.height = this.inputFieldText.scrollHeight + "px";
     }
 
     /**
@@ -530,6 +539,9 @@ function createQuestionContainer(parent, question) {
     // Add event listener to question class
     question.addTextInputEventListener(inputQuestion);
     question.addDropdownInputEventListener(selectQuestionType);
+
+    // Run any formatting functions
+    question.updateTextAreaSize();
 }
 
 /**
