@@ -384,8 +384,10 @@ function addNewQuestion(text = "", updateDisplay = true) {
     questionNum++;
 
     questions[newQuestion.getId()] = newQuestion;
-    if (updateDisplay)
+    if (updateDisplay) {
         updateDisplayQuestions(true);
+        document.getElementById("div-QA-" + newQuestion.getId()).scrollIntoView({ behavior: "instant", block: "center" });
+    }
 }
 
 /**
