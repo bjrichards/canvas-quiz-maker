@@ -350,6 +350,15 @@ class Answer {
      */
     updateTextValue() {
         this.text = this.inputFieldText.value;
+        this.updateTextAreaSize;
+    }
+
+    /**
+     * Updates size of question textarea to show all lines.
+     */
+    updateTextAreaSize() {
+        this.inputFieldText.style.height = "1.2em";
+        this.inputFieldText.style.height = this.inputFieldText.scrollHeight + "px";
     }
 }
 
@@ -522,7 +531,8 @@ function createQuestionContainer(parent, question) {
         labelAnswer.classList.add("label-answer");
         divSingleAnswerContainer.append(labelAnswer);
 
-        var inputAnswer = document.createElement("input");
+        var inputAnswer = document.createElement("textarea");
+        inputAnswer.setAttribute("rows", "1");
         inputAnswer.id = "question-" + question.getId() + "-" + "answer-input-" + question.answers[i].getId();
         inputAnswer.setAttribute("type", "text");
         inputAnswer.value = question.answers[i].getText();
@@ -530,12 +540,12 @@ function createQuestionContainer(parent, question) {
         if (question.getQuestionType() === enumQuestions.TrueFalse) {
             inputAnswer.setAttribute("disabled", "");
         }
-        if (question.getQuestionType() !== enumQuestions.TrueFalse && question.getQuestionType() !== enumQuestions.Essay)
-            question.addAnswerTextInputEventListener(i, inputAnswer);
         divSingleAnswerContainer.append(inputAnswer);
 
-        // divAnswerContainer.appendChild(document.createElement("br"));
-
+        if (question.getQuestionType() !== enumQuestions.TrueFalse && question.getQuestionType() !== enumQuestions.Essay) {
+            question.addAnswerTextInputEventListener(i, inputAnswer);
+            question.answers[i].updateTextAreaSize();
+        }
     }
 
     // Add event listener to question class
