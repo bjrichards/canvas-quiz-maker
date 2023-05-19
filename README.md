@@ -14,3 +14,6 @@ For example, if you have Python installed (and added to PATH if on Windows):
 ```
 > python -m http.server
 ```
+
+## Example of usage
+<img src="./img/example.png">
