@@ -1,3 +1,6 @@
 ☐ Increase speed of parser on document load
 ☐ Fix issue where adding a new question/answer causes the page to focus user to the top
 ☐ Stop the recreation of all questions when only one question or answer has changed
+☐ Add loading animation for document load so user doesn't think the application is frozen
+☐ Move 'download' button to the top right side of page. Right aligned with the 'Upload File' button
+☐ Add a 'by Braeden Richards' tag underneath title of application
