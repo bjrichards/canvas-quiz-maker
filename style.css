@@ -25,12 +25,20 @@ body {
 .app .app-header {
     position: relative;
     padding-top: 80px;
+    padding-bottom: 25px;
     color: #fff;
 }
 
 .app .app-header h1 {
-    padding-bottom: 25px;
+    margin-bottom: 0px;
     font-size: 3.25em;
+    font-weight: 100;
+}
+
+.app .app-header h3 {
+    padding-left: 15px;
+    font-style: italic;
+    font-size: 1.25em;
     font-weight: 100;
 }
 
